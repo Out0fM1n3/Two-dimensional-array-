@@ -121,9 +121,11 @@ namespace ConsoleApp3 // Объявляем пространство имен Co
             Array.Reverse(tempArray); // Изменяем порядок элементов tempArray на обратный
             index = 0; // Сбрасываем значение переменной index на 0
 
-            for (int i = 0; i < rows; i++) // Цикл по строкам массива
-                for (int j = 0; j < cols; j++) // Цикл по столбцам массива
-                    array[i, j] = tempArray[index++]; // Копируем значение текущего элемента из одномерного массива в двумерный
+        static int[,] ReverseArray(int[,] array) // Объявляем статический метод ReverseArray с двумерным массивом типа int[,] в качестве параметра и возвращаемым значением
+        {
+            int rows = array.GetLength(0); // Получаем количество строк в массиве
+            int cols = array.GetLength(1); // Получаем количество столбцов в массиве
+            int[,] result = new int[rows, cols]; // Создаем новый двумерный массив result с такими же размерами как исходный массив
 
             Console.WriteLine("\nReverseArray:"); // Выводим строку "ReverseArray:" в стандартный выходной поток
             WriteArray(array); // Вызываем метод WriteArray с аргументом array
