@@ -1,5 +1,4 @@
 ﻿using System; // Используем пространство имен System
-using System.Linq; // Используем пространство имен System.Linq
 
 namespace ConsoleApp3 // Объявляем пространство имен ConsoleApp3
 {
@@ -12,7 +11,7 @@ namespace ConsoleApp3 // Объявляем пространство имен Co
             var array = new int[5, 5]; // Создаем двумерный массив размером 5 на 5 элементов типа int
             var sum = 0; // Объявляем переменную sum для хранения суммы элементов массива
             var max = 0; // Объявляем переменную max для хранения максимального значения элементов массива
-            var min = 999999; // Объявляем переменную min для хранения минимального значения элементов массива
+            var min = 0; // Объявляем переменную min для хранения минимального значения элементов массива
             double avg = 0.0; // Объявляем переменную avg для хранения среднего значения элементов массива
 
             for (var i = 0; i < 5; i++) // Цикл по строкам массива
@@ -22,14 +21,16 @@ namespace ConsoleApp3 // Объявляем пространство имен Co
                     array[i, j] = rnd.Next(1, 10 + 1); // Заполняем каждый элемент массива случайным числом от 1 до 10 включительно
                 }
             }
+
+            Console.WriteLine("Array:"); // Выводим строку "Array:" в стандартный выходной поток с новой строки перед ней
             WriteArray(array); // Вызываем метод WriteArray с аргументом array
 
             Array_Sum(out sum, array); // Вызываем метод Array_Sum с аргументами out sum и array
-            Array_Max(out max, array); // Вызываем метод Array_Max с аргументами out max и array
-            Array_Min(out min, array); // Вызываем метод Array_Min с аргументами out min и array
+            ArrayMaxMin(out max, out min, array); // Вызываем метод Array_MaxMin с аргументами out max, out min и array
             Array_Average(sum, out avg, array); // Вызываем метод Array_Average с аргументами sum, out avg и array
+            ReverseArray(array); // Вызываем метод ReversArray с аргументом array
             SortArray(array); // Вызываем метод SortArray с аргументом array
-            ReversArray(array); // Вызываем метод ReversArray с аргументом array
+            SortArrayDescending(array); // Вызываем метод SortArrayDescending с аргументом array
             Console.ReadLine(); // Читаем строку из стандартного входного потока (ожидаем нажатия клавиши Enter)
         }
 
@@ -43,38 +44,23 @@ namespace ConsoleApp3 // Объявляем пространство имен Co
             Console.WriteLine($"\nsum = {sum}"); // Выводим значение переменной sum в стандартный выходной поток
         }
 
-        static void Array_Max(out int max, int[,] array) // Объявляем статический метод Array_Max с выходным параметром типа int и двумерным массивом типа int[,]
+        static void ArrayMaxMin(out int max, out int min, int[,] array) // Объявляем статический метод ArrayMaxMin с двумя выходными параметрами типа int и двумерным массивом типа int[,]
         {
-            max = 0; // Инициализируем переменную max значением 0
-            int rows = array.GetLength(0); // Получаем количество строк в массиве
-            int cols = array.GetLength(1); // Получаем количество столбцов в массиве
-            int[] tempArray = new int[rows * cols]; // Создаем одномерный массив размером rows * cols элементов типа int
-            int index = 0; // Объявляем переменную index для хранения текущего индекса элемента в tempArray
+            min = array[0, 0]; // Присваиваем начальное значение переменной min равное первому элементу массива
+            max = array[0, 0]; // Присваиваем начальное значение переменной max равное первому элементу массива
+            for (int i = 0; i < array.GetLength(0); i++) // Цикл for для перебора строк массива
+            {
+                for (int j = 0; j < array.GetLength(1); j++) // Цикл for для перебора столбцов массива
+                {
+                    if (array[i, j] < min) // Если текущий элемент меньше значения переменной min
+                        min = array[i, j]; // Присваиваем значение переменной min равное текущему элементу
+                    if (array[i, j] > max) // Если текущий элемент больше значения переменной max
+                        max = array[i, j]; // Присваиваем значение переменной max равное текущему элементу
+                }
+            }
 
-            for (int i = 0; i < rows; i++) // Цикл по строкам массива
-                for (int j = 0; j < cols; j++) // Цикл по столбцам массива
-                    tempArray[index++] = array[i, j]; // Копируем значение текущего элемента из двумерного массива в одномерный
-
-            max = tempArray.Max(); // Назначаем переменной max максимальное значение элементов tempArray
-
-            Console.WriteLine($"Max = {max}"); // Выводим значение переменной max в стандартный выходной поток
-        }
-
-        static void Array_Min(out int min, int[,] array) // Объявляем статический метод Array_Min с выходным параметром типа int и двумерным массивом типа int[,]
-        {
-            min = 0; // Инициализируем переменную min значением 0
-            int rows = array.GetLength(0); // Получаем количество строк в массиве
-            int cols = array.GetLength(1); // Получаем количество столбцов в массиве
-            int[] tempArray = new int[rows * cols]; // Создаем одномерный массив размером rows * cols элементов типа int
-            int index = 0; // Объявляем переменную index для хранения текущего индекса элемента в tempArray
-
-            for (int i = 0; i < rows; i++) // Цикл по строкам массива
-                for (int j = 0; j < cols; j++) // Цикл по столбцам массива
-                    tempArray[index++] = array[i, j]; // Копируем значение текущего элемента из двумерного массива в одномерный
-
-            min = tempArray.Min(); // Назначаем переменной min минимальное значение элементов tempArray
-
-            Console.WriteLine($"Min = {min}"); // Выводим значение переменной min в стандартный выходной поток
+            Console.WriteLine($"Max = {max}"); // Выводим значение переменной max в стандартный выходной поток с помощью интерполяции строк
+            Console.WriteLine($"Min = {min}"); // Выводим значение переменной min в стандартный выходной поток с помощью интерполяции строк
         }
 
         static void Array_Average(int sum, out double avg, int[,] array) // Объявляем статический метод Array_Average с параметрами типа int и double и двумерным массивом типа int[,]
@@ -88,38 +74,56 @@ namespace ConsoleApp3 // Объявляем пространство имен Co
         {
             int rows = array.GetLength(0); // Получаем количество строк в массиве
             int cols = array.GetLength(1); // Получаем количество столбцов в массиве
-            int[] tempArray = new int[rows * cols]; // Создаем одномерный массив размером rows * cols элементов типа int
-            int index = 0; // Объявляем переменную index для хранения текущего индекса элемента в tempArray
 
-            for (int i = 0; i < rows; i++) // Цикл по строкам массива
-                for (int j = 0; j < cols; j++) // Цикл по столбцам массива
-                    tempArray[index++] = array[i, j]; // Копируем значение текущего элемента из двумерного массива в одномерный
+            for (int i = 0; i < rows * cols; i++) // Цикл for для перебора элементов массива
+            {
+                for (int j = 0; j < rows * cols - 1; j++) // Вложенный цикл for для сравнения текущего элемента с оставшимися элементами массива
+                {
+                    int currentRow = j / cols; // Вычисляем номер строки текущего элемента
+                    int currentCol = j % cols; // Вычисляем номер столбца текущего элемента
+                    int nextRow = (j + 1) / cols; // Вычисляем номер строки следующего элемента
+                    int nextCol = (j + 1) % cols; // Вычисляем номер столбца следующего элемента
 
-            Array.Sort(tempArray); // Сортируем элементы tempArray по возрастанию
-            index = 0; // Сбрасываем значение переменной index на 0
+                    if (array[currentRow, currentCol] > array[nextRow, nextCol]) // Если текущий элемент больше следующего элемента
+                    {
+                        int temp = array[currentRow, currentCol]; // Сохраняем значение текущего элемента во временной переменной temp
+                        array[currentRow, currentCol] = array[nextRow, nextCol]; // Присваиваем значение следующего элемента текущему элементу
+                        array[nextRow, nextCol] = temp; // Присваиваем значение временной переменной temp следующему элементу
+                    }
+                }
+            }
 
-            for (int i = 0; i < rows; i++) // Цикл по строкам массива
-                for (int j = 0; j < cols; j++) // Цикл по столбцам массива
-                    array[i, j] = tempArray[index++]; // Копируем значение текущего элемента из одномерного массива в двумерный
+            Console.WriteLine("\nSortArray:"); // Выводим строку "SortArray:" в стандартный выходной поток с новой строки перед ней
+            WriteArray(array); // Вызываем метод WriteArray с аргументом array для вывода отсортированного массива на экран
 
-            Console.WriteLine("\nSortArray:"); // Выводим строку "SortArray:" в стандартный выходной поток
-            WriteArray(array); // Вызываем метод WriteArray с аргументом array
-            return array; // Возвращаем отсортированный двумерный массив array
+            return array; // Возвращаем отсортированный массив как результат работы метода SortArray.
         }
 
-        static int[,] ReversArray(int[,] array) // Объявляем статический метод ReversArray с двумерным массивом типа int[,] в качестве параметра и возвращаемым значением
+        static int[,] SortArrayDescending(int[,] array) // Объявляем статический метод SortArrayDescending с двумерным массивом типа int[,] в качестве параметра и возвращаемым значением
         {
             int rows = array.GetLength(0); // Получаем количество строк в массиве
             int cols = array.GetLength(1); // Получаем количество столбцов в массиве
-            int[] tempArray = new int[rows * cols]; // Создаем одномерный массив размером rows * cols элементов типа int
-            int index = 0; // Объявляем переменную index для хранения текущего индекса элемента в tempArray
+            for (int i = 0; i < rows * cols; i++) // Цикл for для перебора элементов массива
+            {
+                for (int j = 0; j < rows * cols - 1; j++) // Вложенный цикл for для сравнения текущего элемента с оставшимися элементами массива
+                {
+                    int currentRow = j / cols; // Вычисляем номер строки текущего элемента
+                    int currentCol = j % cols; // Вычисляем номер столбца текущего элемента
+                    int nextRow = (j + 1) / cols; // Вычисляем номер строки следующего элемента
+                    int nextCol = (j + 1) % cols; // Вычисляем номер столбца следующего элемента
+                    if (array[currentRow, currentCol] < array[nextRow, nextCol]) // Если текущий элемент меньше следующего элемента (измененное условие)
+                    {
+                        int temp = array[currentRow, currentCol]; // Сохраняем значение текущего элемента во временной переменной temp
+                        array[currentRow, currentCol] = array[nextRow, nextCol]; // Присваиваем значение следующего элемента текущему элементу
+                        array[nextRow, nextCol] = temp; // Присваиваем значение временной переменной temp следующему элементу
+                    }
+                }
+            }
+            Console.WriteLine("\nSortArrayDescending:"); // Выводим строку "SortArrayDescending:" в стандартный выходной поток с новой строки перед ней
+            WriteArray(array); // Вызываем метод WriteArray с аргументом array для вывода отсортированного массива на экран
 
-            for (int i = 0; i < rows; i++) // Цикл по строкам массива
-                for (int j = 0; j < cols; j++) // Цикл по столбцам массива
-                    tempArray[index++] = array[i, j]; // Копируем значение текущего элемента из двумерного массива в одномерный
-
-            Array.Reverse(tempArray); // Изменяем порядок элементов tempArray на обратный
-            index = 0; // Сбрасываем значение переменной index на 0
+            return array; // Возвращаем отсортированный по убыванию массив как результат работы метода SortArrayDescending.
+        }
 
         static int[,] ReverseArray(int[,] array) // Объявляем статический метод ReverseArray с двумерным массивом типа int[,] в качестве параметра и возвращаемым значением
         {
@@ -127,9 +131,16 @@ namespace ConsoleApp3 // Объявляем пространство имен Co
             int cols = array.GetLength(1); // Получаем количество столбцов в массиве
             int[,] result = new int[rows, cols]; // Создаем новый двумерный массив result с такими же размерами как исходный массив
 
-            Console.WriteLine("\nReverseArray:"); // Выводим строку "ReverseArray:" в стандартный выходной поток
-            WriteArray(array); // Вызываем метод WriteArray с аргументом array
-            return array; // Возвращаем отсортированный в обратном порядке двумерный массив array
+            for (int i = 0; i < rows; i++) // Цикл for для перебора строк массива
+            {
+                for (int j = 0; j < cols; j++) // Вложенный цикл for для перебора столбцов массива
+                {
+                    result[i, j] = array[rows - 1 - i, cols - 1 - j]; // Присваиваем значение текущего элемента из исходного массива соответствующему элементу в новом массиве с обратным индексом
+                }
+            }
+            Console.WriteLine("\nReverseArray:"); // Выводим строку "nReverseArray:" в стандартный выходной поток с новой строки перед ней
+            WriteArray(array); // Вызываем метод WriteArray с аргументом array для вывода отсортированного массива на экран
+            return result; // Возвращаем новый отсортированный по убыванию массив как результат работы метода ReverseArray.
         }
 
         static int[,] WriteArray(int[,] array) // Объявляем статический метод WriteArray с двумерным массивом типа int[,] в качестве параметра и возвращаемым значением
